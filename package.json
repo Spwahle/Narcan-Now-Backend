@@ -4,7 +4,15 @@
   "description": "[![Coverage Status](https://coveralls.io/repos/github/spwahle/Narcan-Now-Backend/badge.svg?branch=staging)](https://coveralls.io/github/spwahle/Narcan-Now-Frontend?branch=staging)",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "lint": "eslint .",
+    "start": "node server.js",
+    "start-win": "SET DEBUG=narcan* && node server.js",
+    "db-on-win": "taskkill /fi \"IMAGENAME eq mongod.exe\" && rm -rf db > nul && mkdir db > nul && mongod --dbpath db",
+    "db-on": "mkdir -p ./db && mongod --dbpath ./db",
+    "db-off": "killall mongod",
+    "db-off-win": "taskkill /im mongod.exe /f",
+    "test-debug": "DEBUG='narcan*' jest --recursive",
+    "test-no-debug": "jest --recursive"
   },
   "repository": {
     "type": "git",
@@ -29,6 +37,7 @@
     "express": "^4.15.4",
     "faker": "^4.1.0",
     "http-errors": "^1.6.2",
+    "jest": "^21.2.1",
     "jsonwebtoken": "^7.4.2",
     "moment": "^2.18.1",
     "mongoose": "^4.11.6",

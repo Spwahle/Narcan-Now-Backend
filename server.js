@@ -6,9 +6,9 @@ const morgan = require('morgan');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const debug = require('debug')('parkify:server');
-const authRouter = require('./route/auth-router.js');
+const authRouter = require('./src/route/auth-router.js');
 // const feedbackRouter = require('./route/feedback-router.js');
-const errorHandler = require('./lib/error-handler.js');
+const errorHandler = require('./src/lib/error-handler.js');
 
 dotenv.load();
 
