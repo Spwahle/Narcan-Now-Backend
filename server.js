@@ -5,14 +5,14 @@ const cors = require('cors');
 const morgan = require('morgan');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
-const debug = require('debug')('parkify:server');
+const debug = require('debug')('narcan:server');
 const authRouter = require('./src/route/auth-router.js');
 // const feedbackRouter = require('./route/feedback-router.js');
 const errorHandler = require('./src/lib/error-handler.js');
 
 dotenv.load();
 
-mongoose.connect(process.env.MONGODB_URI, {
+mongoose.connect(process.env.MONGOD_URI, {
   useMongoClient: true
 });
 
