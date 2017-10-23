@@ -1,7 +1,7 @@
 'use strict';
 
 const createError = require('http-errors');
-const debug = require('debug')('parkify:error-handler');
+const debug = require('debug')('narcan:error-handler');
 
 module.exports = function(error, request, response, next) {
   debug('Error handler.');
