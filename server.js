@@ -12,7 +12,7 @@ const errorHandler = require('./src/lib/error-handler.js');
 
 dotenv.load();
 
-mongoose.connect(process.env.MONGODB_URI, {
+mongoose.connect(process.env.MONGOD_URI, {
   useMongoClient: true
 });
 
