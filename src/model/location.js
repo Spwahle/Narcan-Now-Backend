@@ -4,30 +4,30 @@ const mongoose =   require('mongoose');
 const debug = require('debug');
 const createError = require('http-errors');
 const Schema = mongoose.Schema;
-const Timeslot = require('./timeslot.js');
+const Available = require('./available.js');
 
 const locationSchema = Schema({
   locationID: { type: Schema.Types.ObjectId, required: true }
 });
 
-const Spot = module.exports = mongoose.model('location', locationSchema);
+const Location = module.exports = mongoose.model('location', locationSchema);
 
-Spot.findByIdAndAddLocation = function(id, timeslot) {
-  debug('findByIdAndAddLoca');
+Location.findByIdAndAddLocation = function(id, available) {
+  debug('findByIdAndAddLocal');
 
-  return Spot.findById(id)
+  return Location.findById(id)
   .catch(error => Promise.reject(createError(404, error.message)))
   .then( location => {
-    timeslot.locationID = location._id;
+    available.locationID = location._id;
     this.tempLocation = location;
-    return new Timeslot(timeslot).save();
+    return new Available(available).save();
   })
-  .then( timeslot => {
-    this.tempLocation.timeslots.push(timeslot._id);
-    this.tempTimeslot = timeslot;
+  .then( available => {
+    this.tempLocation.availables.push(available._id);
+    this.tempavailable = available;
     return this.tempLocation.save();
   })
   .then( () => {
-    return this.tempTimeslot;
+    return this.tempavailable;
   });
 };
