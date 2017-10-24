@@ -19,6 +19,8 @@ const userSchema = Schema({
   password: { type: String },
   phone: { type: String, required: true },
   narcan: { type: Boolean, require: true },
+  locationLong: { type: String, require: true},
+  locationLat: { type: String, require: true},
   tokenHash: { type: String, unique: true }
 });
 

@@ -2,7 +2,7 @@
   "name": "Narcan-Now-Backend",
   "version": "1.0.0",
   "description": "[![Coverage Status](https://coveralls.io/repos/github/spwahle/Narcan-Now-Backend/badge.svg?branch=staging)](https://coveralls.io/github/spwahle/Narcan-Now-Frontend?branch=staging)",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
     "lint": "eslint .",
     "start": "node server.js",
