@@ -5,6 +5,13 @@
 .AppleDouble
 .LSOverride
 
+db
+build
+*env
+*.env
+.*.env
+.tern*
+
 # Icon must end with two \r
 Icon
 

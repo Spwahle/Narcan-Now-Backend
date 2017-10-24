@@ -1,119 +1,79 @@
 'use strict';
 
-const crypto = require('crypto');
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-const mongoose = require('mongoose');
-const createError = require('http-errors');
-const Promise = require('bluebird');
-const debug = require('debug')('narcan:user');
+// DEPENDECIES
+import faker from 'faker';
+import * as bcrypt from 'bcrypt';
+import {randomBytes} from 'crypto';
+import * as jwt from 'jsonwebtoken';
+import createError from 'http-errors';
+import Mongoose, {Schema} from 'mongoose';
+import {promisify} from '../lib/promisify.js';
 
-const Schema = mongoose.Schema;
-mongoose.Promise = global.Promise;
+// SCHEMA
+const userSchema =  new Schema({
+  email: {type: String, required: true, unique: true},
+  username: {type: String, required: true, unique: true},
+  passwordHash: {type: String},
+  tokenSeed: {type: String,  unique: true, default: ''},
+})
 
-let User;
+// INSTANCE METHODS
+userSchema.methods.passwordCompare = function(password){
+  return bcrypt.compare(password, this.passwordHash)
+  .then(success => {
+    if (!success)
+      throw createError(401, 'AUTH ERROR: wrong password')
+    return this;
+  })
+}
 
-const userSchema = Schema({
-  name: { type: String, required: true, unique: true },
-  email: { type: String, required: true, unique: true },
-  password: { type: String },
-  phone: { type: String, required: true },
-  narcan: { type: Boolean, require: true },
-  locationLong: { type: String, require: true},
-  locationLat: { type: String, require: true},
-  tokenHash: { type: String, unique: true }
-});
+userSchema.methods.tokenCreate  = function(){
+  this.tokenSeed = randomBytes(32).toString('base64')
+  return this.save()
+  .then(user => {
+    return jwt.sign({tokenSeed: this.tokenSeed}, process.env.SECRET)
+  })
+  .then(token => {
+    return token;
+  })
+}
 
-userSchema.methods.generatePasswordHash = function(password) {
-  debug('generatePasswordHash');
+// MODEL
+const User = Mongoose.model('user', userSchema);
 
-  return new Promise((resolve, reject) => {
-    bcrypt.hash(password, 10, (err, hash) => {
-      if (err) return reject(err);
-      this.password = hash;
-      resolve(this);
-    });
-  });
-};
+// STATIC METHODS
+User.createFromSignup = function (user) {
+  if(!user.password || !user.email || !user.username)
+    return Promise.reject(
+      createError(400, 'VALIDATION ERROR: missing username email or password '))
 
-userSchema.methods.comparePasswordHash = function (password) {
-  debug('comparePasswordHash');
-  return new Promise((resolve, reject) => {
-    bcrypt.compare(password, this.password, (err, valid) => {
-      if (err) return reject(err);
-      if (!valid) return reject(createError(401, 'invalid password'));
-      resolve(this);
-    });
-  });
-};
+  let {password} = user
+  user = Object.assign({}, user, {password: undefined})
 
-userSchema.methods.generateTokenHash = function () {
-  debug('generateTokenHash');
+  return bcrypt.hash(password, 1)
+  .then(passwordHash => {
+    let data = Object.assign({}, user, {passwordHash})
+    return new User(data).save()
+  })
+}
 
-  return new Promise((resolve, reject) => {
-    let tries = 0;
-
-    _generateTokenHash.call(this);
-
-    function _generateTokenHash() {
-      this.tokenHash = crypto.randomBytes(32).toString('hex');
-      this.save()
-      .then(() => {
-        resolve(this.tokenHash);
-      })
-      .catch(err => {
-        if (tries > 3) return reject(err);
-        tries++;
-        _generateTokenHash.call(this);
-      });
-    }
-  });
-};
-
-userSchema.methods.generateToken = function () {
-  debug('generateToken');
-
-  return new Promise((resolve) => {
-    this.generateTokenHash()
-    .then(tokenHash => {
-      resolve(jwt.sign({ token: tokenHash }, process.env.APP_SECRET));
-    });
-  });
-};
-
-userSchema.statics.handleOAuth = function(data) {
-  if (!data || !data.email) {
-    return Promise.reject(createError(400, 'VALIDATION ERROR - missing login information'));
+User.handleOAUTH = function(data) {
+  if(!data || !data.email) {
+    return Promise.reject(createError(400, 'VALIDATION ERROR - missing login info'))
   }
 
-  return User.findOne({ email: data.email })
+  return User.findOne({email: data.email})
   .then(user => {
-    if (!user) {
-      throw new Error('not found - create a user');
-    }
-
-    return user;
+    if(!user) throw new Error('not found - create user')
+    return user
   })
   .catch(() => {
     return new User({
-      name: data.given_name,
+      username: data.name.replace(' ', '_'),
       email: data.email
-    }).save();
-  });
-};
-
-userSchema.statics.createAuthenticated = function(userData, callback) {
-  debug('createAuthenticated');
-  new User(userData).generatePasswordHash(userData.password)
-  .then(user => user.save())
-  .then(user => {
-    user.generateToken()
-    .then(token => {
-      callback(null, user, token);
-      return Promise.resolve();
-    });
+    }).save()
   })
-  .catch(callback);
-};
+}
 
-module.exports = User = mongoose.model('user', userSchema);
+// INTERFACE
+export default User
