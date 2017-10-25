@@ -1,61 +1,56 @@
 {
-  "name": "Narcan-Now-Backend",
+  "name": "sluggram",
   "version": "1.0.0",
-  "description": "[![Coverage Status](https://coveralls.io/repos/github/spwahle/Narcan-Now-Backend/badge.svg?branch=staging)](https://coveralls.io/github/spwahle/Narcan-Now-Frontend?branch=staging)",
-  "main": "server.js",
+  "main": "index.js",
+  "repository": "git@github.com:slugbyte/sluggram.git",
+  "author": "Duncan Marsh <dwolfm@gmail.com>",
+  "license": "MIT",
+  "jest": {
+    "setupFiles": [
+      "<rootDir>/src/__test__/lib/test.env.js",
+      "<rootDir>/src/__test__/lib/mock-s3.js"
+    ]
+  },
   "scripts": {
     "lint": "eslint .",
-    "start": "node server.js",
-    "start-win": "SET DEBUG=narcan* && node server.js",
+    "start": "node index.js",
     "watch": "nodemon index.js",
-    "db-on-win": "taskkill /fi \"IMAGENAME eq mongod.exe\" && rm -rf db > nul && mkdir db > nul && mongod --dbpath db",
-    "db-on": "mkdir -p ./db && mongod --dbpath ./db",
-    "db-off": "killall mongod",
-    "db-off-win": "taskkill /im mongod.exe /f",
-    "test-debug": "DEBUG='narcan*' jest --recursive",
-    "test": "DEBUG='parkify*' && istanbul cover ./node_modules/mocha/bin/_mocha --report lcovonly -- --recursive -R spec && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage",
-    "test-no-debug": "mocha --recursive"
+    "test": "jest --runInBand",
+    "test-watch": "jest --runInBand --watchAll",
+    "dbon": "mkdir -p ./db && mongod --dbpath ./db",
+    "dboff": "killall mongod"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Spwahle/Narcan-Now-Backend.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/Spwahle/Narcan-Now-Backend/issues"
-  },
-  "homepage": "https://github.com/Spwahle/Narcan-Now-Backend#readme",
   "dependencies": {
+    "aws-sdk": "^2.92.0",
+    "aws-sdk-mock": "^1.7.0",
+    "babel": "^6.23.0",
+    "babel-cli": "^6.24.1",
+    "babel-core": "^6.25.0",
+    "babel-loader": "^7.1.1",
     "babel-plugin-transform-object-rest-spread": "^6.23.0",
     "babel-preset-es2015": "^6.24.1",
     "babel-register": "^6.24.1",
     "bcrypt": "^1.0.2",
     "body-parser": "^1.17.2",
-    "chai": "^4.1.2",
+    "cookie-parser": "^1.4.3",
     "cors": "^2.8.4",
-    "coveralls": "^3.0.0",
-    "debug": "^3.1.0",
-    "del": "^3.0.0",
     "dotenv": "^4.0.0",
     "express": "^4.15.3",
-    "http-errors": "^1.6.2",
-    "istanbul": "^0.4.5",
-    "jsonwebtoken": "^7.4.2",
-    "lodash": "^4.17.4",
-    "mocha": "^4.0.1",
-    "moment": "^2.19.1",
-    "mongoose": "^4.11.5",
+    "faker": "^4.1.0",
+    "fs-extra": "^4.0.0",
+    "http-errors": "^1.6.1",
+    "json-parser": "^1.1.5",
+    "jsonwebtoken": "^7.4.1",
+    "mongoose": "^4.11.4",
     "morgan": "^1.8.2",
     "multer": "^1.3.0",
-    "socket.io": "^2.0.3",
-    "superagent": "^3.5.2",
-    "uuid": "^3.1.0"
+    "nodemon": "^1.11.0",
+    "ramda": "^0.24.1",
+    "webpack": "^3.4.1"
   },
   "devDependencies": {
-    "faker": "^4.1.0",
+    "babel-jest": "^20.0.3",
     "jest": "^20.0.4",
-    "nodemon": "^1.11.0"
+    "superagent": "^3.5.2"
   }
 }

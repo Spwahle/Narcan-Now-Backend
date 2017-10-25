@@ -1,32 +1,13 @@
 'use strict'
 
 // DEPENDENCIES
-import cors from 'cors'
-import morgan from 'morgan'
+import * as db from './db'
 import express from 'express'
-import * as mongo from './mongo.js'
-
-import authRouter from '../router/auth.js'
-import fourOhFour from '../middleware/four-oh-four.js'
-import errorHandler from '../middleware/error-middleware.js'
+import middleware from '../middleware'
+import {log, logError} from './util.js'
 
 // STATE
-const app = express()
-
-// global middleware
-app.use(morgan('dev'))
-app.use(cors({
-  origin: process.env.CORS_ORIGINS.split(' '),
-  credentials: true, 
-}))
-
-// routers
-app.use(authRouter)
-
-// handle errors
-app.use(fourOhFour)
-app.use(errorHandler)
-
+const app = express().use(middleware)
 const state = {
   isOn: false, 
   http: null,
@@ -38,10 +19,10 @@ export const start = () => {
     if (state.isOn) 
       return reject(new Error('USAGE ERROR: the state is on'))
     state.isOn = true
-    mongo.start()
+    db.start()
     .then(() => {
       state.http = app.listen(process.env.PORT, () => {
-        console.log('__SERVER_UP__', process.env.PORT)
+        log('__SERVER_UP__', process.env.PORT)
         resolve()
       })
     })
@@ -53,10 +34,10 @@ export const stop = () => {
   return new Promise((resolve, reject) => {
     if(!state.isOn)
       return reject(new Error('USAGE ERROR: the state is off'))
-    return mongo.stop()
+    return db.stop()
     .then(() => {
       state.http.close(() => {
-        console.log('__SERVER_DOWN__')
+        log('__SERVER_DOWN__')
         state.isOn = false
         state.http = null
         resolve()
