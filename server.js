@@ -1,14 +1,14 @@
 'use strict';
 
-const express = require('express');
-const cors = require('cors');
-const morgan = require('morgan');
-const mongoose = require('mongoose');
-const dotenv = require('dotenv');
-const debug = require('debug')('narcan:server');
-const authRouter = require('./src/route/auth-router.js');
-// const feedbackRouter = require('./route/feedback-router.js');
-const errorHandler = require('./src/lib/error-handler.js');
+import express = from('express');
+import cors = from('cors');
+import morgan = from('morgan');
+import mongoose = from('mongoose');
+import dotenv = from('dotenv');
+import debug = from('debug')('narcan:server');
+import authRouter = from('./src/route/auth-router.js');
+// import feedbackRouter = from('./route/feedback-router.js');
+import errorHandler = from('./src/lib/error-handler.js');
 
 dotenv.load();
 

@@ -14,8 +14,13 @@ const userSchema =  new Schema({
   email: {type: String, required: true, unique: true},
   username: {type: String, required: true, unique: true},
   passwordHash: {type: String},
+  phone: {type: String, required: true },
+  narcan: { type: Boolean, require: true },
+  locationLong: { type: String, require: true},
+  locationLat: { type: String, require: true},
   tokenSeed: {type: String,  unique: true, default: ''},
 })
+
 
 // INSTANCE METHODS
 userSchema.methods.passwordCompare = function(password){

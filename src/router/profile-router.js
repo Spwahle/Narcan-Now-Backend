@@ -1,14 +1,14 @@
 'use strict';
 
-const Router = require('express').Router;
-const jsonParser = require('body-parser').json();
-const createError = require('http-errors');
-const debug = require('debug')('parkify:profile-router');
+import Router  from 'express';
+import jsonParser  from 'body-parser' ;
+import createError from 'http-errors' ;
+import debug  from('debug')('Narcan:profile-router');
 
-const Profile = require('../model/profile.js');
-const bearerAuth = require('../lib/bearer-auth-middleware.js');
+import Profile  from '../model/profile.js';
+import bearerAuth  from '../lib/bearer-auth-middleware.js';
 
-const profileRouter = module.exports = Router();
+export default new Router()
 
 profileRouter.post('/api/profile', bearerAuth, jsonParser, function(request, response, next) {
   debug('POST: /api/profile');
