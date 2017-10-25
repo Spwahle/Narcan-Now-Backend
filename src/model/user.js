@@ -1,26 +1,21 @@
-'use strict';
+'use strict'
 
 // DEPENDECIES
-import faker from 'faker';
-import * as bcrypt from 'bcrypt';
-import {randomBytes} from 'crypto';
-import * as jwt from 'jsonwebtoken';
-import createError from 'http-errors';
-import Mongoose, {Schema} from 'mongoose';
-import {promisify} from '../lib/promisify.js';
+import * as bcrypt from 'bcrypt'
+import {randomBytes} from 'crypto'
+import * as jwt from 'jsonwebtoken'
+import createError from 'http-errors'
+import {promisify} from '../lib/util.js'
+import Mongoose, {Schema} from 'mongoose'
 
 // SCHEMA
 const userSchema =  new Schema({
   email: {type: String, required: true, unique: true},
   username: {type: String, required: true, unique: true},
-  passwordHash: {type: String},
-  phone: {type: String, required: true },
-  narcan: { type: Boolean, require: true },
-  locationLong: { type: String, require: true},
-  locationLat: { type: String, require: true},
-  tokenSeed: {type: String,  unique: true, default: ''},
+  passwordHash: {type: String, required: true},
+  randomHash: {type: String,  unique: true, default: ''},
+  profile: {type: Schema.Types.ObjectId},
 })
-
 
 // INSTANCE METHODS
 userSchema.methods.passwordCompare = function(password){
@@ -28,26 +23,26 @@ userSchema.methods.passwordCompare = function(password){
   .then(success => {
     if (!success)
       throw createError(401, 'AUTH ERROR: wrong password')
-    return this;
+    return this
   })
 }
 
 userSchema.methods.tokenCreate  = function(){
-  this.tokenSeed = randomBytes(32).toString('base64')
+  this.randomHash = randomBytes(32).toString('base64')
   return this.save()
   .then(user => {
-    return jwt.sign({tokenSeed: this.tokenSeed}, process.env.SECRET)
+    return jwt.sign({randomHash: this.randomHash}, process.env.SECRET)
   })
   .then(token => {
-    return token;
+    return token
   })
 }
 
 // MODEL
-const User = Mongoose.model('user', userSchema);
+const User = Mongoose.model('user', userSchema)
 
 // STATIC METHODS
-User.createFromSignup = function (user) {
+User.create = function (user) {
   if(!user.password || !user.email || !user.username)
     return Promise.reject(
       createError(400, 'VALIDATION ERROR: missing username email or password '))
@@ -57,26 +52,8 @@ User.createFromSignup = function (user) {
 
   return bcrypt.hash(password, 1)
   .then(passwordHash => {
-    let data = Object.assign({}, user, {passwordHash})
+    let data = Object.assign({}, user, {passwordHash}) 
     return new User(data).save()
-  })
-}
-
-User.handleOAUTH = function(data) {
-  if(!data || !data.email) {
-    return Promise.reject(createError(400, 'VALIDATION ERROR - missing login info'))
-  }
-
-  return User.findOne({email: data.email})
-  .then(user => {
-    if(!user) throw new Error('not found - create user')
-    return user
-  })
-  .catch(() => {
-    return new User({
-      username: data.name.replace(' ', '_'),
-      email: data.email
-    }).save()
   })
 }
 

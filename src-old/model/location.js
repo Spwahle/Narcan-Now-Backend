@@ -1,16 +1,16 @@
 'use strict';
 
-const mongoose =   require('mongoose');
-const debug = require('debug');
-const createError = require('http-errors');
-const Schema = mongoose.Schema;
-const Available = require('./available.js');
+import mongoose =   from('mongoose');
+import debug = from('debug');
+import createError = from('http-errors');
+import Schema = mongoose.Schema;
+import Available = from('./available.js');
 
-const locationSchema = Schema({
-  locationID: { type: Schema.Types.ObjectId, required: true }
+import locationSchema = Schema({
+  locationID: { type: Schema.Types.ObjectId, fromd: true }
 });
 
-const Location = module.exports = mongoose.model('location', locationSchema);
+import Location = module.exports = mongoose.model('location', locationSchema);
 
 Location.findByIdAndAddLocation = function(id, available) {
   debug('findByIdAndAddLocal');
