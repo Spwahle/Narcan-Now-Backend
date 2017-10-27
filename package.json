@@ -1,5 +1,5 @@
 {
-  "name": "Narcan Now",
+  "name": "Narcan-Now",
   "version": "1.0.0",
   "main": "index.js",
   "repository": "https://github.com/Spwahle/Narcan-Now-Backend",
@@ -8,6 +8,10 @@
   "jest": {
     "verbose": true,
     "testEnvironment": "node",
+    "setupFiles": [
+      "<rootDir>/src/__test__/lib/test.env.js",
+      "<rootDir>/src/__test__/lib/mock-s3.js"
+    ],
     "collectCoverage": true,
     "coverageDirectory": "./coverage",
     "coverageThreshold": {
