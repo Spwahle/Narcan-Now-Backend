@@ -5,13 +5,13 @@
 
 //Link to our front-end docs// //Shield.io badges, show test coverage %//
 
-#Table of Contents
+# Table of Contents
 
-##Contributors:
+## Contributors:
 
 Shaun, Maddy, Tim
 
-##Description of our Service
+## Description of our Service
 
 Narcan Now wants to find the fastest way to get anti-overdose drugs to potential victims–and often times people who can help or locations that could provide the drug are closer than the nearest ambulance.
 
@@ -19,7 +19,7 @@ Narcan Now wants to find the fastest way to get anti-overdose drugs to potential
 Users can create accounts which allow them to view/add Narcan locations.
 Users can also request aid, in which other nearby will be notified and directed to the fastest possible to route
 
-##How to Install
+## How to Install
 
 Please refer to out deployed web site, available at //TODO: DEPLOYED URL//. If you'd like to see the backend of our code. Please head to our git hub repo and clone. Make sure to npm install the many dependencies listed in our package.json using npm i. Create a .env file including these values:
 
